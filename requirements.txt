@@ -1,0 +1,6 @@
+flask
+gunicorn
+rembg
+moviepy
+pillow
+numpy
