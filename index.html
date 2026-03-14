@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tanque Digital - Remover Fundo de Vídeo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+      color: #e0e0ff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(20, 20, 40, 0.9);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      border: 1px solid rgba(100,150,255,0.25);
+      box-shadow: 0 25px 70px rgba(0,0,0,0.7);
+      padding: 45px 35px;
+      max-width: 640px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.4rem;
+      margin-bottom: 10px;
+      color: #a0d0ff;
+      text-shadow: 0 0 20px rgba(100,180,255,0.6);
+    }
+    .subtitle {
+      font-size: 1.15rem;
+      color: #b0b0ff;
+      margin-bottom: 35px;
+    }
+    .section {
+      margin-bottom: 30px;
+      text-align: left;
+    }
+    label {
+      display: block;
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+      color: #d0d0ff;
+      font-weight: 500;
+    }
+    input[type="file"], select, input[type="color"], button {
+      width: 100%;
+      padding: 15px;
+      border-radius: 14px;
+      border: 1px solid rgba(100,150,255,0.45);
+      background: rgba(35,35,65,0.75);
+      color: #e0e0ff;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    input[type="file"], input[type="color"] { cursor: pointer; }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #70b0ff;
+      box-shadow: 0 0 0 4px rgba(112,176,255,0.3);
+    }
+    button {
+      background: linear-gradient(90deg, #4a90ff, #70d0ff);
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 20px;
+      box-shadow: 0 10px 30px rgba(112,176,255,0.5);
+    }
+    button:hover:not(:disabled) {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 40px rgba(112,176,255,0.7);
+    }
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
+    .progress-container { margin: 35px 0; display: none; }
+    .progress-bar {
+      height: 16px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #4a90ff, #70d0ff);
+      transition: width 0.6s ease;
+      box-shadow: 0 0 25px #70d0ff;
+    }
+    .progress-text {
+      margin-top: 14px;
+      font-size: 1.05rem;
+      color: #a0d0ff;
+    }
+    .result {
+      margin-top: 40px;
+      padding: 25px;
+      background: rgba(30,45,80,0.6);
+      border-radius: 16px;
+      border: 1px solid rgba(112,176,255,0.35);
+      display: none;
+    }
+    .download-btn {
+      display: inline-block;
+      background: linear-gradient(90deg, #70d0ff, #a0e0ff);
+      color: #0f0f1a;
+      padding: 14px 32px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-top: 20px;
+      box-shadow: 0 8px 25px rgba(112,208,255,0.5);
+    }
+    .download-btn:hover { background: linear-gradient(90deg, #a0e0ff, #c0f0ff); transform: translateY(-3px); }
+    footer { margin-top: 50px; font-size: 0.95rem; color: #8080aa; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Tanque Digital</h1>
+    <p class="subtitle">Remova fundo de vídeo com IA real • Ideal para baixista</p>
+
+    <div class="section">
+      <label for="video-upload">Upload do vídeo (MP4)</label>
+      <input type="file" id="video-upload" accept="video/*">
+    </div>
+
+    <div class="section">
+      <label for="model-select">Modelo de IA</label>
+      <select id="model-select">
+        <option value="u2net_human_seg">u2net_human_seg (melhor para pessoas + baixo)</option>
+        <option value="isnet-general-use">isnet-general-use (alta precisão)</option>
+        <option value="birefnet-portrait">birefnet-portrait (perfeito para performances)</option>
+        <option value="u2net">u2net (clássico)</option>
+        <option value="silueta">silueta (rápido)</option>
+        <option value="u2netp">u2netp (super leve)</option>
+        <option value="isnet-anime">isnet-anime (estilizado)</option>
+      </select>
+    </div>
+
+    <div class="section">
+      <label for="background-select">Novo fundo</label>
+      <select id="background-select">
+        <option value="transparente">Transparente (exporta .MOV com alpha)</option>
+        <option value="branco">Branco puro</option>
+        <option value="preto">Preto puro</option>
+        <option value="custom-color">Cor estática</option>
+        <option value="custom-image">Upload de imagem (JPEG/PNG)</option>
+      </select>
+    </div>
+
+    <div class="section" id="color-section" style="display:none;">
+      <label for="bg-color">Escolha a cor</label>
+      <input type="color" id="bg-color" value="#ffffff">
+    </div>
+
+    <div class="section" id="image-section" style="display:none;">
+      <label for="bg-upload">Upload do fundo</label>
+      <input type="file" id="bg-upload" accept="image/jpeg, image/png">
+    </div>
+
+    <button id="process-btn" disabled>Processar Vídeo</button>
+
+    <div class="progress-container" id="progress-container">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-text" id="progress-text">Iniciando... 0%</div>
+    </div>
+
+    <div class="result" id="result">
+      <h3>✅ Processamento concluído!</h3>
+      <p>O vídeo está pronto com o fundo removido pela IA.</p>
+      <a href="#" id="download-link" class="download-btn" download>Baixar Vídeo Final</a>
+    </div>
+
+    <footer>Tanque Digital • Natal/RN • 2026 • IA local (rembg)</footer>
+  </div>
+
+  <script>
+    const videoInput = document.getElementById('video-upload');
+    const modelSelect = document.getElementById('model-select');
+    const bgSelect = document.getElementById('background-select');
+    const colorSection = document.getElementById('color-section');
+    const imageSection = document.getElementById('image-section');
+    const bgColor = document.getElementById('bg-color');
+    const bgUpload = document.getElementById('bg-upload');
+    const processBtn = document.getElementById('process-btn');
+    const progressCont = document.getElementById('progress-container');
+    const progressFill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-text');
+    const resultDiv = document.getElementById('result');
+    const downloadLink = document.getElementById('download-link');
+
+    let progressInterval;
+
+    videoInput.addEventListener('change', () => processBtn.disabled = !videoInput.files.length);
+
+    bgSelect.addEventListener('change', () => {
+      const val = bgSelect.value;
+      colorSection.style.display = val === 'custom-color' ? 'block' : 'none';
+      imageSection.style.display = val === 'custom-image' ? 'block' : 'none';
+    });
+
+    processBtn.addEventListener('click', async () => {
+      if (!videoInput.files.length) return alert('Selecione o vídeo!');
+
+      processBtn.disabled = true;
+      resultDiv.style.display = 'none';
+      progressCont.style.display = 'block';
+      let progress = 0;
+
+      progressInterval = setInterval(() => {
+        progress += Math.random() * 9 + 6;
+        if (progress > 95) progress = 95;
+        progressFill.style.width = progress + '%';
+        progressText.textContent = `Processando com ${modelSelect.options[modelSelect.selectedIndex].text}... ${Math.floor(progress)}%`;
+      }, 420);
+
+      const formData = new FormData();
+      formData.append('video', videoInput.files[0]);
+      formData.append('model', modelSelect.value);
+      formData.append('bg_type', bgSelect.value);
+      if (bgSelect.value === 'custom-color') formData.append('bg_color', bgColor.value);
+      if (bgSelect.value === 'custom-image' && bgUpload.files.length) formData.append('bg_image', bgUpload.files[0]);
+
+      try {
+        const response = await fetch('/process', { method: 'POST', body: formData });
+        if (!response.ok) throw new Error('Erro no servidor');
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+
+        clearInterval(progressInterval);
+        progressFill.style.width = '100%';
+        progressText.textContent = 'Concluído!';
+
+        setTimeout(() => {
+          downloadLink.href = url;
+          downloadLink.download = bgSelect.value === 'transparente' ? 'video_sem_fundo.mov' : 'video_sem_fundo.mp4';
+          resultDiv.style.display = 'block';
+          progressCont.style.display = 'none';
+          processBtn.disabled = false;
+        }, 600);
+
+      } catch (err) {
+        clearInterval(progressInterval);
+        alert('Erro: ' + err.message);
+        progressCont.style.display = 'none';
+        processBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
