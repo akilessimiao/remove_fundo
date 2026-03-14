@@ -1,8 +1,4 @@
-Aqui está um **README.md** completo, profissional e bem estruturado para o seu projeto "Tanque Digital" no GitHub. Ele explica o que é o app, como instalar localmente, como fazer deploy no Render (ou similares), e inclui badges, screenshots fictícios (você pode adicionar depois), e instruções claras.
 
-Copie e cole diretamente no seu repositório como arquivo `README.md` (crie novo arquivo no GitHub ou localmente).
-
-```markdown
 # Tanque Digital 🎸✨
 
 **Remova o fundo de vídeos automaticamente com IA** – ideal para clipes de baixista, performances musicais, TikTok ou qualquer conteúdo com pessoa em movimento.
