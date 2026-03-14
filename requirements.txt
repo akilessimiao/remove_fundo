@@ -1,6 +1,6 @@
 flask
 gunicorn
-rembg
+rembg[cpu]          # ← Mude para isso! (instala onnxruntime para CPU)
 moviepy
 pillow
 numpy
