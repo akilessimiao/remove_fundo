@@ -3,135 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Studio PRO | Tanque Digital Corrigido</title>
+    <title>AI Studio PRO | Responsivo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
         :root { --bg: #05050f; --accent: #00f0ff; --bg2: #0a0a1f; }
-        body { background: var(--bg); color: #e0f7ff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        body { background: var(--bg); color: #e0f7ff; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        .content-section { background: var(--bg2); border: 1px solid rgba(0, 240, 255, 0.1); border-radius: 16px; padding: 20px; margin: 10px; position: relative; }
-        .btn-neon { border: 1px solid var(--accent); color: var(--accent); font-family: 'Orbitron'; cursor: pointer; background: rgba(0,240,255,0.05); transition: 0.3s; }
-        .btn-neon:hover { background: var(--accent); color: #000; box-shadow: 0 0 20px var(--accent); }
-        #output_canvas { width: 100%; height: auto; border-radius: 12px; display: none; border: 1px solid var(--accent); margin: 0 auto; }
+        
+        /* Container principal responsivo */
+        .main-container { width: 95%; max-width: 600px; margin: 20px auto; padding: 15px; background: var(--bg2); border: 1px solid rgba(0, 240, 255, 0.1); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        .btn-neon { border: 1px solid var(--accent); color: var(--accent); background: rgba(0,240,255,0.05); transition: 0.3s; width: 100%; padding: 18px; border-radius: 12px; font-weight: bold; text-transform: uppercase; font-size: 13px; }
+        .btn-neon:active { background: var(--accent); color: #000; transform: scale(0.98); }
+        
+        /* Ajuste do Canvas para não estourar a tela */
+        canvas { width: 100% !important; height: auto !important; border-radius: 12px; border: 1px solid var(--accent); margin-top: 15px; }
+        
+        .progress-bar-bg { width: 100%; background: rgba(255,255,255,0.05); height: 12px; border-radius: 6px; margin: 15px 0; overflow: hidden; }
+        #progress_fill { width: 0%; height: 100%; background: var(--accent); box-shadow: 0 0 15px var(--accent); transition: width 0.1s linear; }
     </style>
 </head>
 <body>
 
-    <main class="max-w-3xl mx-auto py-8">
-        <section class="content-section text-center">
-            <h1 class="font-orbitron text-accent text-xl mb-6">TANQUE DIGITAL <span class="text-[10px] opacity-50 text-white">STUDIO AI PRO</span></h1>
-            
-            <div id="setup_area" class="space-y-4">
-                <div class="p-6 border border-white/5 rounded-xl bg-black/20">
-                    <button onclick="document.getElementById('video_input').click()" class="btn-neon w-full py-5 rounded-xl text-xs font-bold">
-                        <i class="fas fa-video mr-2"></i> SELECIONAR VÍDEO DO BAIXISTA
-                    </button>
-                    <input type="file" id="video_input" accept="video/*" class="hidden">
-                </div>
-            </div>
+    <main class="main-container text-center">
+        <header class="mb-6">
+            <h1 class="font-orbitron text-accent text-lg">TANQUE DIGITAL</h1>
+            <p class="text-[9px] tracking-[3px] opacity-50 uppercase">Studio AI Mobile Ready</p>
+        </header>
 
-            <div id="processing_status" class="hidden py-10">
-                <p class="font-orbitron text-xs text-accent animate-pulse">REMOVENDO FUNDO E APLICANDO ESTÚDIO REAL...</p>
+        <div id="setup_area" class="space-y-4">
+            <div class="p-4 bg-black/30 rounded-xl border border-white/5">
+                <p class="text-[11px] mb-4 opacity-70">Toque abaixo para subir o vídeo do baixista</p>
+                <button onclick="document.getElementById('video_input').click()" class="btn-neon font-orbitron">
+                    📂 Selecionar Vídeo
+                </button>
+                <input type="file" id="video_input" accept="video/*" class="hidden">
             </div>
+        </div>
 
-            <video id="input_video" class="hidden" crossorigin="anonymous" muted playsinline></video>
-            <canvas id="output_canvas"></canvas>
-            <div id="download_area" class="hidden mt-6"></div>
-        </section>
+        <div id="processing_status" class="hidden">
+            <p class="font-orbitron text-[10px] text-accent animate-pulse">Processando Áudio e Vídeo...</p>
+            <div class="progress-bar-bg">
+                <div id="progress_fill"></div>
+            </div>
+            <p id="percent_text" class="text-xs font-bold font-orbitron">0%</p>
+            <button onclick="location.reload()" class="mt-4 text-[10px] text-red-400 opacity-60">Cancelar</button>
+        </div>
+
+        <canvas id="output_canvas" class="hidden"></canvas>
+
+        <div id="download_area" class="hidden py-6">
+            <a id="download_link" href="#" download="VIDEO_PRO_ESTUDIO.webm" class="btn-neon bg-accent text-black inline-block shadow-[0_0_20px_#00f0ff] animate-bounce">
+                📥 Baixar Vídeo Pronto
+            </a>
+            <button onclick="location.reload()" class="block w-full mt-6 text-[10px] opacity-40">Processar outro vídeo</button>
+        </div>
+
+        <video id="input_video" class="hidden" crossorigin="anonymous" muted playsinline></video>
     </main>
 
     <script>
-        const videoElement = document.getElementById('input_video');
-        const canvasElement = document.getElementById('output_canvas');
-        const canvasCtx = canvasElement.getContext('2d');
+        const video = document.getElementById('input_video');
+        const canvas = document.getElementById('output_canvas');
+        const ctx = canvas.getContext('2d');
+        const progressFill = document.getElementById('progress_fill');
+        const percentText = document.getElementById('percent_text');
         const downloadArea = document.getElementById('download_area');
         
-        let mediaRecorder;
-        let recordedChunks = [];
-        
-        // IMAGEM DO ESTÚDIO PROFISSIONAL
-        const studioBg = new Image();
-        studioBg.crossOrigin = "anonymous";
-        studioBg.src = 'https://r.jina.ai/i/060e2996e3e5495589c379a257540938'; // Link da imagem que geramos
+        let recorder;
+        let chunks = [];
 
-        const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`});
-        selfieSegmentation.setOptions({ modelSelection: 1 });
-        selfieSegmentation.onResults(onResults);
+        const bg = new Image();
+        bg.crossOrigin = "anonymous";
+        bg.src = 'https://r.jina.ai/i/060e2996e3e5495589c379a257540938';
 
-        function onResults(results) {
-            canvasElement.width = videoElement.videoWidth;
-            canvasElement.height = videoElement.videoHeight;
-            
-            canvasCtx.save();
-            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        const selfie = new SelfieSegmentation({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`});
+        selfie.setOptions({ modelSelection: 1 });
+        selfie.onResults(results => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.save();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (bg.complete) ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'destination-in';
+            ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'destination-over';
+            ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+            ctx.restore();
 
-            // 1. DESENHA O ESTÚDIO AO FUNDO
-            if (studioBg.complete) {
-                canvasCtx.drawImage(studioBg, 0, 0, canvasElement.width, canvasElement.height);
-            } else {
-                canvasCtx.fillStyle = '#05050f';
-                canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+            if (video.duration) {
+                const p = (video.currentTime / video.duration) * 100;
+                progressFill.style.width = p + '%';
+                percentText.innerText = Math.round(p) + '%';
             }
-
-            // 2. CRIA A MÁSCARA DE RECORTE (SEGMENTAÇÃO)
-            canvasCtx.globalCompositeOperation = 'destination-in';
-            canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
-
-            // 3. DESENHA O BAIXISTA POR CIMA DA MÁSCARA
-            canvasCtx.globalCompositeOperation = 'destination-over';
-            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
-
-            canvasCtx.restore();
-        }
+        });
 
         document.getElementById('video_input').onchange = (e) => {
             const file = e.target.files[0];
             if (file) {
                 document.getElementById('setup_area').classList.add('hidden');
                 document.getElementById('processing_status').classList.remove('hidden');
-                videoElement.src = URL.createObjectURL(file);
-                videoElement.onloadeddata = () => {
-                    canvasElement.style.display = 'block';
-                    videoElement.play();
-                    startRecording();
-                    renderLoop();
+                video.src = URL.createObjectURL(file);
+                video.onloadeddata = () => {
+                    canvas.classList.remove('hidden');
+                    video.play();
+                    startRec();
+                    loop();
                 };
             }
         };
 
-        async function renderLoop() {
-            if(!videoElement.paused && !videoElement.ended) {
-                await selfieSegmentation.send({image: videoElement});
-                requestAnimationFrame(renderLoop);
-            } else if (videoElement.ended) {
-                if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
+        async function loop() {
+            if(!video.paused && !video.ended) {
+                await selfie.send({image: video});
+                requestAnimationFrame(loop);
+            } else if (video.ended) {
+                if (recorder && recorder.state !== "inactive") recorder.stop();
             }
         }
 
-        function startRecording() {
-            recordedChunks = [];
-            const stream = canvasElement.captureStream(30);
+        function startRec() {
+            chunks = [];
+            const stream = canvas.captureStream(30);
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const source = audioCtx.createMediaElementSource(videoElement);
+            const source = audioCtx.createMediaElementSource(video);
             const dest = audioCtx.createMediaStreamDestination();
             source.connect(dest);
             source.connect(audioCtx.destination);
             
             const combined = new MediaStream([...stream.getTracks(), ...dest.stream.getTracks()]);
-            mediaRecorder = new MediaRecorder(combined, { mimeType: 'video/webm' });
-
-            mediaRecorder.ondataavailable = (e) => { if(e.data.size > 0) recordedChunks.push(e.data); };
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(recordedChunks, { type: 'video/webm' });
-                const url = URL.createObjectURL(blob);
-                downloadArea.innerHTML = `<a href="${url}" download="VIDEO_PRO_STUDIO.webm" class="btn-neon px-12 py-5 rounded-full block text-sm font-bold">📥 BAIXAR VÍDEO FINALIZADO</a>`;
+            recorder = new MediaRecorder(combined, { mimeType: 'video/webm' });
+            recorder.ondataavailable = e => chunks.push(e.data);
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                document.getElementById('download_link').href = URL.createObjectURL(blob);
                 downloadArea.classList.remove('hidden');
                 document.getElementById('processing_status').classList.add('hidden');
             };
-            mediaRecorder.start();
+            recorder.start();
         }
     </script>
 </body>
